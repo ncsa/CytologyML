@@ -17,6 +17,7 @@ from keras.layers import Dense, Conv1D, Flatten, MaxPooling1D
 from sklearn.externals import joblib
 
 # User to enter a comma-separated list of csv files as input
+A_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for all cells\n")
 NAG_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for non-aggregate cells\n")
 WBC_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for WBC cells\n")
 CD45D_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for CD45Dim cells\n")
@@ -31,10 +32,12 @@ CD3CD16T_Files = raw_input("Please enter a comma-separated list of csv files you
 NK_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for NK cells\n")
 NBNT_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for NonB NonT cells\n")
 T_Files = raw_input("Please enter a comma-separated list of csv files you'd like to use for T cells\n")
-Output_Path = raw_input("Please enter the path for the outputs\n")
-Models_Path = raw_input("Please enter the path for the models\n")
+Metrics_Path = raw_input("Please enter a path for the location where you'd like the metrics to be stored\n")
+Models_Path = raw_input("Please enter a path for the location where you'd like the models to be stored\n")
 
 # Creating a list of files and file handles that can be used to process the files
+A_Files = A_Files.split(",")
+A_File_Handle = [pd.read_csv(A_Files[i], header=0) for i in range(len(A_Files))]
 NAG_Files = NAG_Files.split(",")
 NAG_File_Handle = [pd.read_csv(NAG_Files[i]) for i in range(len(NAG_Files))]
 WBC_Files = WBC_Files.split(",")
@@ -73,34 +76,43 @@ def Preprocessing(Files, File_Handle, Dataframe):
 	Dataframe['Type'] = 1
 	return Dataframe
 
-def Check_Attributes_Files(Files, File_Handle):
-	for i in range(len(Files)):
-		print("############################")
-		print(Files[i])
-		print(File_Handle[i].shape)
-		print(File_Handle[i].columns)
-		print("############################")
-
-def Check_Attributes_Dataframe(Dataframe):
-	print("############################")
-	print(Dataframe.shape)
-	print(Dataframe.columns)
-	print(Dataframe.head())
-	print("############################")
+def Subset_Setup_New(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
+	ds1 = set([tuple(line) for line in Superset_Dataframe.values])
+	ds2 = set([tuple(line) for line in Subset_Dataframe.values])
+	Not_Subset_Dataframe = ds1.difference(ds2)
+	Not_Subset_Dataframe = pd.DataFrame(list(ds1.difference(ds2)))
+	Not_Subset_Dataframe['Type'] = 0
+	Final_Dataframe = pd.concat([Not_Subset_Dataframe, Subset_Dataframe], axis=0, sort=False, ignore_index=True)
+	print("########################")
+	print(Subset_Dataframe.shape[0])
+	print(Subset_Dataframe.columns)
+	print(Not_Subset_Dataframe.shape[0])
+	print(Not_Subset_Dataframe.columns)
+	print(Final_Dataframe.shape[0])
+	print(Final_Dataframe.columns)
+	print("########################")
+	return Final_Dataframe
 
 def Subset_Setup(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
 	Not_Subset_Dataframe = pd.DataFrame()
-	Not_Subset_Dataframe = pd.concat([Superset_Dataframe, Subset_Dataframe, Subset_Dataframe]).drop_duplicates(keep=False)
+	Not_Subset_Dataframe = pd.concat([Superset_Dataframe, Subset_Dataframe]).drop_duplicates(keep=False)
 	Not_Subset_Dataframe['Type'] = 0
 	Final_Dataframe = pd.concat([Not_Subset_Dataframe, Subset_Dataframe], axis=0, sort=False, ignore_index=True)
+	print(Subset_Dataframe.shape[0])
+	print(Not_Subset_Dataframe.shape[0])
+	print(Final_Dataframe.shape[0])
 	return Final_Dataframe
 
-def Basic_Classification(Dataframe, Metrics_File_Name):
-	Metrics_File_Handle = open(Output_Path+Metrics_File_Name, 'w+')
+def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path):
+	Metrics_File_Handle = open(Metrics_Path+Metrics_File_Name, 'w+')
 	X = Dataframe.loc[:, Dataframe.columns != 'Type']
+	X = X.loc[:, X.columns != 'Time']
 	y = Dataframe[['Type']]
-	print(X.head())
-	print(y.head())
+	print(Metrics_File_Name[:-4])
+	print(X.shape)
+	print(X.columns)
+	print(y.shape)
+	print(y.columns)
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
 	################################################
@@ -115,7 +127,7 @@ def Basic_Classification(Dataframe, Metrics_File_Name):
 	Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write("############################\n")
-	NB_File = Metrics_File_Name[:-4] + "_NB.pkl"
+	NB_File = Models_Path + Metrics_File_Name[:-4] + "_NB.pkl"
 	joblib.dump(Gaussian_NB, NB_File) 
 
 	################################################
@@ -130,7 +142,7 @@ def Basic_Classification(Dataframe, Metrics_File_Name):
 	Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write("############################\n")
-	DT_File = Metrics_File_Name[:-4] + "_DT.pkl"
+	DT_File = Models_Path + Metrics_File_Name[:-4] + "_DT.pkl"
 	joblib.dump(Decision_Tree, DT_File) 
 	
 	################################################
@@ -146,160 +158,78 @@ def Basic_Classification(Dataframe, Metrics_File_Name):
 	Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
 	Metrics_File_Handle.write("############################\n")
-	LR_File = Metrics_File_Name[:-4] + "_LR.pkl"
+	LR_File = Models_Path + Metrics_File_Name[:-4] + "_LR.pkl"
 	joblib.dump(Logistic_regression, LR_File) 
 
-	################################################
-	# 				NEURAL NETWORKS	   			   #	   
-	################################################
-	#encoder = LabelEncoder()
-	#encoder.fit(y)
-	#y = encoder.transform(y)
-	#y = np_utils.to_categorical(y)
-	#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-
-	#X_train = np.expand_dims(X_train, axis=2)
-	#X_test = np.expand_dims(X_test, axis=2)
-	#print(X_train.shape)
-	#CNN_Classifier = Sequential()
-	#CNN_Classifier.add(Conv1D(filters=32, kernel_size=5, input_shape=(15, 1)))
-	#CNN_Classifier.add(MaxPooling1D(pool_size=5))
-	#CNN_Classifier.add(Flatten())
-	#CNN_Classifier.add(Dense(10, activation='relu'))
-	#CNN_Classifier.add(Dense(2, activation='softmax'))
-	#CNN_Classifier.compile(optimizer ='adam',loss='categorical_crossentropy', metrics =['accuracy'])
-	#CNN_Classifier.fit(X_train,y_train, batch_size=1, epochs=10)
-	#print(CNN_Classifier.summary())
-	#scores = CNN_Classifier.evaluate(X_test, y_test)
-
-	#y_pred = CNN_Classifier.predict(X_test)
-	#y_pred = np.argmax(y_pred, axis=1)
-	#y_test = np.argmax(y_test, axis=1)
-	#print("############################")
-	#print("CONVOLUTIONAL NEURAL NETWORK")
-	#print("\n%s: %.2f%%" % (CNN_Classifier.metrics_names[1], scores[1]*100))
-	#print(confusion_matrix(y_test, y_pred))
-	#print(classification_report(y_test, y_pred))
-	#print("############################")
-
-	#NN_Classifier = Sequential()
-	#NN_Classifier.add(Dense(4, activation='relu', kernel_initializer='random_normal', input_dim=X.shape[1]))
-	#NN_Classifier.add(Dense(4, activation='relu', kernel_initializer='random_normal'))
-	#NN_Classifier.add(Dense(2, activation='softmax', kernel_initializer='random_normal'))
-	#NN_Classifier.compile(optimizer ='adam',loss='categorical_crossentropy', metrics =['accuracy'])
-	#NN_Classifier.fit(X_train,y_train, batch_size=10, epochs=10)
-	#scores = NN_Classifier.evaluate(X_test, y_test)
-
-	#y_pred = NN_Classifier.predict(X_test)
-	#y_pred = np.argmax(y_pred, axis=1)
-	#y_test = np.argmax(y_test, axis=1)
-	#print("############################")
-	#print("NEURAL NETWORKS")
-	#print("\n%s: %.2f%%" % (NN_Classifier.metrics_names[1], scores[1]*100))
-	#print(confusion_matrix(y_test, y_pred))
-	#print(classification_report(y_test, y_pred))
-	#print("############################")
-
-
+A = pd.DataFrame()
 NAG = pd.DataFrame()
-WBC = pd.DataFrame()
-Check_Attributes_Files(NAG_Files, NAG_File_Handle)
-Check_Attributes_Files(WBC_Files, WBC_File_Handle)
+A = Preprocessing(A_Files, A_File_Handle, A)
 NAG = Preprocessing(NAG_Files, NAG_File_Handle, NAG)
+ANAG = pd.DataFrame()
+ANAG = Subset_Setup(A, NAG, ANAG)
+Basic_Classification(ANAG, "A_NAG.txt", Metrics_Path, Models_Path)
+
+
+WBC = pd.DataFrame()
 WBC = Preprocessing(WBC_Files, WBC_File_Handle, WBC)
-Check_Attributes_Dataframe(NAG)
-Check_Attributes_Dataframe(WBC)
-NAWBC = pd.DataFrame()
-NAWBC = Subset_Setup(NAG, WBC, NAWBC)
-Check_Attributes_Dataframe(NAWBC)
-Basic_Classification(NAWBC, "NA_WBC.txt")
+NAGWBC = pd.DataFrame()
+NAGWBC = Subset_Setup(NAG, WBC, NAGWBC)
+Basic_Classification(NAGWBC, "NAG_WBC.txt", Metrics_Path, Models_Path)
 
 
 CD45D = pd.DataFrame()
 CD45L = pd.DataFrame()
-Check_Attributes_Files(CD45D_Files, CD45D_File_Handle)
-Check_Attributes_Files(CD45L_Files, CD45L_File_Handle)
 CD45D = Preprocessing(CD45D_Files, CD45D_File_Handle, CD45D)
 CD45L = Preprocessing(CD45L_Files, CD45L_File_Handle, CD45L)
-Check_Attributes_Dataframe(CD45D)
-Check_Attributes_Dataframe(CD45L)
 WBCCD45D = pd.DataFrame()
 WBCCD45L = pd.DataFrame()
 WBCCD45D = Subset_Setup(WBC, CD45D, WBCCD45D)
 WBCCD45L = Subset_Setup(WBC, CD45L, WBCCD45L)
-Check_Attributes_Dataframe(CD45D)
-Check_Attributes_Dataframe(CD45L)
-Basic_Classification(WBCCD45D, "WBC_CD45D.txt")
-Basic_Classification(WBCCD45L, "WBC_CD45L.txt")
+Basic_Classification(WBCCD45D, "WBC_CD45D.txt", Metrics_Path, Models_Path)
+Basic_Classification(WBCCD45L, "WBC_CD45L.txt", Metrics_Path, Models_Path)
 
 CD19CD10C = pd.DataFrame()
 CD34 = pd.DataFrame()
-Check_Attributes_Files(CD19CD10C_Files, CD19CD10C_File_Handle)
-Check_Attributes_Files(CD34_Files, CD34_File_Handle)
 CD19CD10C = Preprocessing(CD19CD10C_Files, CD19CD10C_File_Handle, CD19CD10C)
 CD34 = Preprocessing(CD34_Files, CD34_File_Handle, CD34)
-Check_Attributes_Dataframe(CD19CD10C)
-Check_Attributes_Dataframe(CD34)
 CD45DCD19CD10C = pd.DataFrame()
 CD45DCD34 = pd.DataFrame()
 CD45DCD19CD10C = Subset_Setup(CD45D, CD19CD10C, CD45DCD19CD10C)
 CD45DCD34 = Subset_Setup(CD45D, CD34, CD45DCD34)
-Check_Attributes_Dataframe(CD19CD10C)
-Check_Attributes_Dataframe(CD34)
-Basic_Classification(CD45DCD19CD10C, "CD45D_CD19CD10C.txt")
-Basic_Classification(CD45DCD34, "CD45D_CD34.txt")
+Basic_Classification(CD45DCD19CD10C, "CD45D_CD19CD10C.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD45DCD34, "CD45D_CD34.txt", Metrics_Path, Models_Path)
 
 
 CD19PL = pd.DataFrame()
 CD19NL = pd.DataFrame()
-Check_Attributes_Files(CD19PL_Files, CD19PL_File_Handle)
-Check_Attributes_Files(CD19NL_Files, CD19NL_File_Handle)
 CD19PL = Preprocessing(CD19PL_Files, CD19PL_File_Handle, CD19PL)
 CD19NL = Preprocessing(CD19NL_Files, CD19NL_File_Handle, CD19NL)
-Check_Attributes_Dataframe(CD19PL)
-Check_Attributes_Dataframe(CD19NL)
 CD45LCD19PL = pd.DataFrame()
 CD45LCD19NL = pd.DataFrame()
 CD45LCD19PL = Subset_Setup(CD45L, CD19PL, CD45LCD19PL)
 CD45LCD19NL = Subset_Setup(CD45L, CD19NL, CD45LCD19NL)
-Check_Attributes_Dataframe(CD19PL)
-Check_Attributes_Dataframe(CD19NL)
-Basic_Classification(CD45LCD19PL, "CD45L_CD19PL.txt")
-Basic_Classification(CD45LCD19PL, "CD45L_CD19NL.txt")
+Basic_Classification(CD45LCD19PL, "CD45L_CD19PL.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD45LCD19NL, "CD45L_CD19NL.txt", Metrics_Path, Models_Path)
 
 KPB = pd.DataFrame()
 LPB = pd.DataFrame()
-Check_Attributes_Files(KPB_Files, KPB_File_Handle)
-Check_Attributes_Files(LPB_Files, LPB_File_Handle)
 KPB = Preprocessing(KPB_Files, KPB_File_Handle, KPB)
 LPB = Preprocessing(LPB_Files, LPB_File_Handle, LPB)
-Check_Attributes_Dataframe(KPB)
-Check_Attributes_Dataframe(LPB)
 CD19PLKPB = pd.DataFrame()
 CD19PLLPB = pd.DataFrame()
 CD19PLKPB = Subset_Setup(CD19PL, KPB, CD19PLKPB)
 CD19PLLPB = Subset_Setup(CD19PL, LPB, CD19PLLPB)
-Check_Attributes_Dataframe(KPB)
-Check_Attributes_Dataframe(LPB)
-Basic_Classification(CD19PLKPB, "CD19PL_KPB.txt")
-Basic_Classification(CD19PLLPB, "CD19PL_LPB.txt")
+Basic_Classification(CD19PLKPB, "CD19PL_KPB.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD19PLLPB, "CD19PL_LPB.txt", Metrics_Path, Models_Path)
 
 CD3CD16T = pd.DataFrame()
 NK = pd.DataFrame()
 NBNT = pd.DataFrame()
 T = pd.DataFrame()
-Check_Attributes_Files(CD3CD16T_Files, CD3CD16T_File_Handle)
-Check_Attributes_Files(NK_Files, NK_File_Handle)
-Check_Attributes_Files(NBNT_Files, NBNT_File_Handle)
-Check_Attributes_Files(T_Files, T_File_Handle)
 CD3CD16T = Preprocessing(CD3CD16T_Files, CD3CD16T_File_Handle, CD3CD16T)
 NK = Preprocessing(NK_Files, NK_File_Handle, NK)
 NBNT = Preprocessing(NBNT_Files, NBNT_File_Handle, NBNT)
 T = Preprocessing(T_Files, T_File_Handle, T)
-Check_Attributes_Dataframe(CD3CD16T)
-Check_Attributes_Dataframe(NK)
-Check_Attributes_Dataframe(NBNT)
-Check_Attributes_Dataframe(T)
 CD19NLCD3CD16T = pd.DataFrame()
 CD19NLNK = pd.DataFrame()
 CD19NLNBNT = pd.DataFrame()
@@ -308,11 +238,7 @@ CD19NLCD3CD16T = Subset_Setup(CD19NL, CD3CD16T, CD19NLCD3CD16T)
 CD19NLNK = Subset_Setup(CD19NL, NK, CD19NLNK)
 CD19NLNBNT = Subset_Setup(CD19NL, NBNT, CD19NLNBNT)
 CD19NLT = Subset_Setup(CD19NL, T, CD19NLT)
-Check_Attributes_Dataframe(CD3CD16T)
-Check_Attributes_Dataframe(NK)
-Check_Attributes_Dataframe(NBNT)
-Check_Attributes_Dataframe(T)
-Basic_Classification(CD19NLCD3CD16T, "CD19NL_CD3CD16T.txt")
-Basic_Classification(CD19NLNK, "CD19NL_NK.txt")
-Basic_Classification(CD19NLT, "CD19NL_T.txt")
-Basic_Classification(CD19NLNBNT, "CD19NL_NBNT.txt")
+Basic_Classification(CD19NLCD3CD16T, "CD19NL_CD3CD16T.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD19NLNK, "CD19NL_NK.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD19NLT, "CD19NL_T.txt", Metrics_Path, Models_Path)
+Basic_Classification(CD19NLNBNT, "CD19NL_NBNT.txt", Metrics_Path, Models_Path)
