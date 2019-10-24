@@ -1,0 +1,792 @@
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 94241
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 90773
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 160
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 86589
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 0
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81936
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 4620
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 81916
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 20
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 152
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 326
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 146
+Intersection of type 0: 0
+-----------
+Intersection of type 1: 3996
+Intersection of type 0: 0
+-----------

@@ -1,0 +1,86 @@
+ORDER:
+    ANAG/NAG,
+    NAGWBC/NAG,
+    WBCCD45D/CD45D
+    WBCCD45L/CD45L
+    CD45DCD19CD10C/CD19CD10C
+    CD45DCD34/CD34
+    CD45LCD19PL/CD19PL
+    CD45LCD19NL/CD19NL
+    CD19PLKPB/KPB
+    CD19PLLPB/LPB
+    CD19NLCD3CD16T/CD3CD16T
+    CD19NLNK/NK
+    CD19NLNBNT/NBNT
+    CD19NLT/T
+    ------------
+Length of subset: 94241
+Length of superset: 102976
+Length of TP: 94241
+LENGTH OF FP: 0
+LENGTH OF FN: 8735
+Length of subset: 90773
+Length of superset: 94241
+Length of TP: 90773
+LENGTH OF FP: 0
+LENGTH OF FN: 3468
+Length of subset: 160
+Length of superset: 90773
+Length of TP: 160
+LENGTH OF FP: 0
+LENGTH OF FN: 90613
+Length of subset: 86589
+Length of superset: 90773
+Length of TP: 86589
+LENGTH OF FP: 0
+LENGTH OF FN: 4184
+Length of subset: 0
+Length of superset: 160
+Length of TP: 0
+LENGTH OF FP: 0
+LENGTH OF FN: 160
+Length of subset: 4
+Length of superset: 160
+Length of TP: 4
+LENGTH OF FP: 0
+LENGTH OF FN: 156
+Length of subset: 81936
+Length of superset: 86589
+Length of TP: 81936
+LENGTH OF FP: 0
+LENGTH OF FN: 4653
+Length of subset: 4620
+Length of superset: 86589
+Length of TP: 4620
+LENGTH OF FP: 0
+LENGTH OF FN: 81969
+Length of subset: 81916
+Length of superset: 81936
+Length of TP: 81916
+LENGTH OF FP: 0
+LENGTH OF FN: 20
+Length of subset: 20
+Length of superset: 81936
+Length of TP: 20
+LENGTH OF FP: 0
+LENGTH OF FN: 81916
+Length of subset: 152
+Length of superset: 4620
+Length of TP: 152
+LENGTH OF FP: 0
+LENGTH OF FN: 4468
+Length of subset: 326
+Length of superset: 4620
+Length of TP: 326
+LENGTH OF FP: 0
+LENGTH OF FN: 4294
+Length of subset: 146
+Length of superset: 4620
+Length of TP: 146
+LENGTH OF FP: 0
+LENGTH OF FN: 4474
+Length of subset: 3996
+Length of superset: 4620
+Length of TP: 3996
+LENGTH OF FP: 0
+LENGTH OF FN: 624
