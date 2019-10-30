@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 import logging, sys
+import argparse
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
@@ -76,22 +77,31 @@ def confusion_matrix(superset,subset):
     false_pos = pd.DataFrame()
     false_neg = pd.DataFrame()
 
-    #converting the dataframes to Lists, and then to sets (lists are unhashable)
-    superset_list = (superset.values).tolist()
-    subset_list = (subset.values).tolist()
-    subset_set = set(map(tuple, subset_list))
-    superset_set = set(map(tuple, superset_list))
+    #Everything of Type = 1 in the Superset is our predicted value. Subset will contain the known values
+    prediction = superset.loc[superset['Type'] == 1]
+
+    #converting the dataframes to lists, and then to sets (lists are unhashable). If it's an ndarray, directly convert it to a set
+    predicted_list = (prediction.values).tolist()
+    predicted_set = set(map(tuple, predicted_list))
+
+    known_set = 0
+    #Subset can either be type Dataframe or type np.ndarray
+    if(type(subset) is np.ndarray):
+        known_set =set(subset.flatten())
+    else:
+        known_list = (subset.values).tolist()
+        known_set = set(map(tuple, known_list))
 
     #Use set intersection methods
-    m = len(superset_set)
-    n = len(subset_set)
-    f.write("Length of subset: ")
-    f.write(str(len(subset_set)) + '\n')
-    f.write("Length of superset: ")
-    f.write(str(len(superset_set)) + '\n')
+    m = len(predicted_set)
+    n = len(known_set)
+    f.write("Length of Known: ")
+    f.write(str(len(known_set)) + '\n')
+    f.write("Length of Predicted: ")
+    f.write(str(len(predicted_set)) + '\n')
 
     #True positives should be in both the subset and superset
-    TP = superset_set.intersection(subset_set)
+    TP = predicted_set.intersection(known_set)
     f.write("LENGTH OF TP: ")
     f.write(str(len(TP)) + '\n')
 
@@ -101,17 +111,27 @@ def confusion_matrix(superset,subset):
     # f.write(str(len(TN)) + '\n')
 
     #False positives will be in the subset but not in the superset
-    FP = subset_set - superset_set
+    FP = predicted_set - known_set
     f.write("LENGTH OF FP: ")
     f.write(str(len(FP)) + '\n')
 
     #False negatives will be in the superset but not the subset
-    FN = superset_set - subset_set
+    FN = known_set - predicted_set
     f.write("LENGTH OF FN: ")
     f.write(str(len(FN)) + '\n')
 
+    f.write("------------" + '\n')
     f.close()
 
+def read_input():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-b", "--method", help="Method to use")
+    args = parser.parse_args()
+
+    print( "Method {} ".format(
+        args.method,
+        ))
+    return args.method
 
 #Removing columns where there are no entries in the data
 def Preprocessing(Files, File_Handle, Dataframe):
@@ -171,7 +191,7 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     logging.debug(X.columns)
     logging.debug(y.shape)
     logging.debug(y.columns)
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
     X_train = X
     y_train = y
 
@@ -180,13 +200,13 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     ################################################
     Gaussian_NB = GaussianNB()
     Gaussian_NB.fit(X_train, np.ravel(y_train))
-    # y_pred = Gaussian_NB.predict(X_test)
-    # Metrics_File_Handle.write("############################\n")
-    # Metrics_File_Handle.write("NAIVE BAYES\n")
-    # Metrics_File_Handle.write(str(metrics.accuracy_score(y_test, y_pred)*100)+"\n")
-    # Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write("############################\n")
+    y_pred = Gaussian_NB.predict(X_test)
+    Metrics_File_Handle.write("############################\n")
+    Metrics_File_Handle.write("NAIVE BAYES\n")
+    Metrics_File_Handle.write(str(metrics.accuracy_score(y_test, y_pred)*100)+"\n")
+    Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write("############################\n")
     NB_File = Models_Path + Metrics_File_Name[:-4] + "_NB.pkl"
     joblib.dump(Gaussian_NB, NB_File)
 
@@ -195,13 +215,13 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     ################################################
     Decision_Tree = tree.DecisionTreeClassifier()
     Decision_Tree.fit(X_train, np.ravel(y_train))
-    # y_pred = Decision_Tree.predict(X_test)
-    # Metrics_File_Handle.write("############################\n")
-    # Metrics_File_Handle.write("DECISION TREES\n")
-    # Metrics_File_Handle.write(str(metrics.accuracy_score(y_test, y_pred)*100)+"\n")
-    # Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write("############################\n")
+    y_pred = Decision_Tree.predict(X_test)
+    Metrics_File_Handle.write("############################\n")
+    Metrics_File_Handle.write("DECISION TREES\n")
+    Metrics_File_Handle.write(str(metrics.accuracy_score(y_test, y_pred)*100)+"\n")
+    Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write("############################\n")
     DT_File = Models_Path + Metrics_File_Name[:-4] + "_DT.pkl"
     joblib.dump(Decision_Tree, DT_File)
 
@@ -210,14 +230,14 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     ################################################
     Logistic_regression = LogisticRegression(solver = 'lbfgs')
     Logistic_regression.fit(X_train, np.ravel(y_train))
-    # y_pred = Logistic_regression.predict(X_test)
-    # score = Logistic_regression.score(X_test, y_test)
-    # Metrics_File_Handle.write("############################\n")
-    # Metrics_File_Handle.write("MULTI-CLASS LOGISTIC REGRESSION\n")
-    # Metrics_File_Handle.write(str(score*100)+"\n")
-    # Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
-    # Metrics_File_Handle.write("############################\n")
+    y_pred = Logistic_regression.predict(X_test)
+    score = Logistic_regression.score(X_test, y_test)
+    Metrics_File_Handle.write("############################\n")
+    Metrics_File_Handle.write("MULTI-CLASS LOGISTIC REGRESSION\n")
+    Metrics_File_Handle.write(str(score*100)+"\n")
+    Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
+    Metrics_File_Handle.write("############################\n")
     LR_File = Models_Path + Metrics_File_Name[:-4] + "_LR.pkl"
     joblib.dump(Logistic_regression, LR_File)
 

@@ -1,0 +1,19 @@
+{
+  "A_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_All.csv",
+  "NAG_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_Non-Aggs.csv",
+  "WBC_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_WBC.csv",
+  "CD45D_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD45_Dim.csv",
+  "CD45L_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD45+_Lymphs.csv",
+  "CD19CD10C_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD19+CD10+_Checker.csv",
+  "CD34_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD34+.csv",
+  "CD19PL_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD19+_Lymphs.csv",
+  "CD19NL_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD19-_Lymphs.csv",
+  "KPB_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_Kappa+_Bcells.csv",
+  "LPB_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_Lambda+_Bcells.csv",
+  "CD3CD16T_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_CD3+CD16+_Tcells.csv",
+  "NK_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_NKcells.csv",
+  "NBNT_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_Non-B_Non-T.csv",
+  "T_Files": "/Users/tajesvibhat/cytologyML/CytologyML/Test_Files/18-CTFX6_LCMSB_Tcells.csv",
+  "Metrics_Path": "/Users/tajesvibhat/cytologyML/CytologyML/metrics/",
+  "Models_Path": "/Users/tajesvibhat/cytologyML/CytologyML/models/"
+}

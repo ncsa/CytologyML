@@ -1,0 +1,42 @@
+############################
+NAIVE BAYES
+99.06978389275987
+None
+              precision    recall  f1-score   support
+
+           0       0.84      0.93      0.88      1042
+           1       1.00      0.99      1.00     27231
+
+    accuracy                           0.99     28273
+   macro avg       0.92      0.96      0.94     28273
+weighted avg       0.99      0.99      0.99     28273
+
+############################
+############################
+DECISION TREES
+100.0
+None
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      1042
+           1       1.00      1.00      1.00     27231
+
+    accuracy                           1.00     28273
+   macro avg       1.00      1.00      1.00     28273
+weighted avg       1.00      1.00      1.00     28273
+
+############################
+############################
+MULTI-CLASS LOGISTIC REGRESSION
+99.5366604180667
+None
+              precision    recall  f1-score   support
+
+           0       0.94      0.93      0.94      1042
+           1       1.00      1.00      1.00     27231
+
+    accuracy                           1.00     28273
+   macro avg       0.97      0.97      0.97     28273
+weighted avg       1.00      1.00      1.00     28273
+
+############################
