@@ -1,0 +1,17 @@
+Study Name: 18-CHQY9_LCMSB
+Method used: y_or
+NAG:
+Length of Known: 78561
+Length of Predicted: 0
+NUMBER OF TP: 0
+NUMBER OF FP: 0
+NUMBER OF FN: 78561
+------------
+Method used: y_or
+WBC:
+Length of Known: 68814
+Length of Predicted: 0
+NUMBER OF TP: 0
+NUMBER OF FP: 0
+NUMBER OF FN: 68814
+------------
