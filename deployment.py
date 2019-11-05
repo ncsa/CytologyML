@@ -59,7 +59,9 @@ def evaluation_matrix(name, predicted,known):
 def method_input():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--method", help="Method to use")
+    parser.add_argument("-j", "--json", help="JSON file")
     args = parser.parse_args()
+    file_path = args.json
     print( "Method Being Used: {} ".format(
         args.method,
         ))
@@ -83,6 +85,7 @@ def Subset_Setup(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
 
 def main():
     study = 0
+    file_path = 0
     A = pd.DataFrame()
     NAG = pd.DataFrame()
     ANAG = pd.DataFrame()
@@ -103,7 +106,7 @@ def main():
 
     #Read the data inputs from the JSON file. If debugging mode is on, read from the JSON sent to training. Otherwise, read from a smaller set of files in deployment_files.json
     if(__debug__):
-        with open('deployment_db.json', 'r') as f:
+        with open(file_path, 'r') as f:
             files_dict = json.load(f, strict=False)
 
         A_Files = files_dict['A_Files'].split("?")

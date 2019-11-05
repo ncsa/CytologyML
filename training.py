@@ -155,7 +155,11 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
 
 def main():
     #Read the data inputs from a JSON file
-    with open('training_files.json', 'r') as f:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-j", "--json", help="JSON file")
+    args = parser.parse_args()
+    file_path = args.json
+    with open(file_path, 'r') as f:
         files_dict = json.load(f, strict=False)
 
     # Creating a list of files and file handles that can be used to process the files
