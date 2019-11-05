@@ -58,8 +58,8 @@ def evaluation_matrix(name, predicted,known):
 
 def method_input():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--method", help="Method to use")
-    parser.add_argument("-j", "--json", help="JSON file")
+    parser.add_argument("-m", "--method", help="Method to use")
+    parser.add_argument("-j", "--json", help="Path to JSON file")
     args = parser.parse_args()
     file_path = args.json
     print( "Method Being Used: {} ".format(
@@ -110,15 +110,6 @@ def main():
             files_dict = json.load(f, strict=False)
 
         A_Files = files_dict['A_Files'].split("?")
-
-        #get study name
-        path = os.path.basename(os.path.normpath(A_Files[0])).split(".")
-        path_split = path[0].split("_",2)
-        study_name = path_split[0] + '_' + path_split[1]
-        a = open("/Users/tajesvibhat/cytologyML/CytologyML/metrics/evaluation_matrix.txt", "w")
-        a.write("Study Name: " + study_name + '\n')
-        a.close()
-
         A_File_Handle = [pd.read_csv(A_Files[i], header=0) for i in range(len(A_Files))]
         NAG_Files = files_dict['NAG_Files'].split("?")
         NAG_File_Handle = [pd.read_csv(NAG_Files[i]) for i in range(len(NAG_Files))]
@@ -176,6 +167,14 @@ def main():
         Models_Path = files_dict['Models_Path']
         A = Preprocessing(A_Files, A_File_Handle, A)
 
+
+    #get study name and write that to file
+    path = os.path.basename(os.path.normpath(A_Files[0])).split(".")
+    path_split = path[0].split("_",2)
+    study_name = path_split[0] + '_' + path_split[1]
+    a = open(Metrics_Path + "evaluation_matrix.txt", "w")
+    a.write("Study Name: " + study_name + '\n')
+    a.close()
 
     A = A.drop(['Time'], axis=1)
     A_NAG_DT = load(Models_Path+"A_NAG_DT.pkl", 'r')
