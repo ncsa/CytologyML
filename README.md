@@ -11,7 +11,8 @@ We aim to create a machine learning pipeline using Python’s ML modules to perf
 -       Use the test files while running training.py and use the studies while running deployment.py\
  
 # Organization of the Code:
-The code is broken up into 2 main files \ 
+The code is broken up into 2 main files
+
 (1) training.py - we check the integrity of the data and set up our classification modules. We save our trained models for further use.\
 (2) deployment.py – we classify cells into smaller populations using the different classification methods (only the method input in command line with the –m flag will ultimately be used)
 
