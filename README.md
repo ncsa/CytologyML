@@ -27,3 +27,4 @@ ex. python3 deployment.py -m y_and -j /Users/Home/file.json\
 With debugging:\
 python3 -O training.py -j <path_to_json>
 
+Can also be run with the help command, -h
