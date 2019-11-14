@@ -19,11 +19,11 @@ The code is broken up into 2 main files:
 (2) deployment.py – we classify cells into smaller populations using the different classification methods (only the method input in command line with the –m flag will ultimately be used)
 
 
-#How to Run the Code:
-Without debugging:
-python3 deployment.py -m <method> -j <path_to_json>
-ex. python3 deployment.py -m y_and -j /Users/Home/file.json
+# How to Run the Code:
+Without debugging:\
+python3 deployment.py -m <method> -j <path_to_json>\
+ex. python3 deployment.py -m y_and -j /Users/Home/file.json\
 
-With debugging:
+With debugging:\
 python3 -O training.py -j <path_to_json>
 
