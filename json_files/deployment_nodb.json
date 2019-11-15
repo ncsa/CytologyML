@@ -1,0 +1,6 @@
+{
+      "A_Files": "/path/to/file",
+      "Metrics_Path": "/path/to/folder",
+      "Models_Path": "/path/to/folder"
+
+}
