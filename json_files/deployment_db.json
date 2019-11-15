@@ -1,0 +1,19 @@
+{
+  "A_Files": "path/to/file",
+  "NAG_Files": "path/to/file",
+  "WBC_Files": "path/to/file",
+  "CD45D_Files": "path/to/file",
+  "CD45L_Files": "path/to/file",
+  "CD19CD10C_Files": "path/to/file",
+  "CD34_Files": "path/to/file",
+  "CD19PL_Files": "path/to/file",
+  "CD19NL_Files": "path/to/file",
+  "KPB_Files": "path/to/file",
+  "LPB_Files": "path/to/file",
+  "CD3CD16T_Files": "path/to/file",
+  "NK_Files": "path/to/file",
+  "NBNT_Files": "path/to/file",
+  "T_Files": "path/to/file",
+  "Metrics_Path": "path/to/dir",
+  "Models_Path": "path/to/dir"
+}
