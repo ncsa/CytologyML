@@ -11,6 +11,10 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 from sklearn import metrics
+import scikitplot as skplt
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
 
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
@@ -27,14 +31,13 @@ def evaluation_matrix(name, predicted,known):
     '''This function is converting dataframes to sets so that arithmetic can be performed to calculate TP, FP, FN on the sets'''
     f = open("/Users/tajesvibhat/cytologyML/CytologyML/metrics/evaluation_matrix.txt", "a")
 
-    #converting the dataframes to lists, and then to sets (lists are unhashable). If it's an ndarray, directly convert it to a set
     predicted_list = (predicted.values).tolist()
     predicted_set = set(map(tuple, predicted_list))
 
     known_list = (known.values).tolist()
     known_set = set(map(tuple,known_list))
 
-    f.write("Method used: " + method_input() + '\n')
+    f.write("Method used: " + method_input()[0] + '\n')
     f.write(name + ":" + '\n')
 
     #Use set intersection methods
@@ -54,6 +57,31 @@ def evaluation_matrix(name, predicted,known):
     f.write("NUMBER OF FN: " + str(len(FN)) + '\n')
 
     f.write("------------" + '\n')
+
+    #ROC Curve
+    fpr, tpr, thresholds = roc_curve(known_set, predicted_set)
+    #roc_auc = roc_auc_score(known_set, predicted_set)
+    roc_auc = roc_auc_score(known_set, 1)
+    # Plot ROC curve
+    plt.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], 'k--')  # random predictions curve
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.0])
+    plt.xlabel('False Positive Rate or (1 - Specifity)')
+    plt.ylabel('True Positive Rate or (Sensitivity)')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
+
+
+    # np.concatenate((1-predicted_set,predicted_set),axis=1)
+    # skplt.metrics.plot_roc_curve(known_set, predicted_set)
+    # plt.show()
+    #
+    # auc = sklearn.metrics.roc_auc_score(known_set, 1)
+    f.write("Area under the curve: " + str(auc) + '\n')
+    #
+    # f.write("------------" + '\n')
     f.close()
 
 def method_input():
@@ -61,11 +89,11 @@ def method_input():
     parser.add_argument("-m", "--method", help="Method to use")
     parser.add_argument("-j", "--json", help="Path to JSON file")
     args = parser.parse_args()
-    file_path = args.json
     print( "Method Being Used: {} ".format(
         args.method,
         ))
-    return args.method
+    vals = [args.method, args.json]
+    return vals
 
 def Check_Attributes_Dataframe(Dataframe):
     """Check the attributes of the dataframe to check that everything is included."""
@@ -85,7 +113,10 @@ def Subset_Setup(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
 
 def main():
     study = 0
-    file_path = 0
+    index = 0
+    vals = method_input()
+    file_path = vals[1]
+    method = vals[0]
     A = pd.DataFrame()
     NAG = pd.DataFrame()
     ANAG = pd.DataFrame()
@@ -172,9 +203,14 @@ def main():
     path = os.path.basename(os.path.normpath(A_Files[0])).split(".")
     path_split = path[0].split("_",2)
     study_name = path_split[0] + '_' + path_split[1]
-    a = open(Metrics_Path + "evaluation_matrix.txt", "w")
-    a.write("Study Name: " + study_name + '\n')
-    a.close()
+    with open("/Users/tajesvibhat/cytologyML/CytologyML/metrics/evaluation_matrix.txt", 'w') as a:
+        a.write("Study Name: " + study_name + '\n')
+        a.close()
+
+    with open(Metrics_Path + "evaluation_matrix.txt", "w") as a:
+        a.write("Study Name: " + study_name + '\n')
+        a.write("temp temp temp")
+        a.close()
 
     A = A.drop(['Time'], axis=1)
     A_NAG_DT = load(Models_Path+"A_NAG_DT.pkl", 'r')
@@ -186,7 +222,9 @@ def main():
     y_NB = A_NAG_NB.predict(A)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-    y = method_input()
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    list = ["y_DT", "y_LR", "y_NB", "y_or", "y_and"]
+    y = options[list.index(method)]
 
     A['Type'] = y
     NAG_predicted = A.loc[A['Type'] == 1]
@@ -202,12 +240,13 @@ def main():
     NAG_WBC_DT = load(Models_Path+"NAG_WBC_DT.pkl", 'r')
     NAG_WBC_LR = load(Models_Path+"NAG_WBC_LR.pkl", 'r')
     NAG_WBC_NB = load(Models_Path+"NAG_WBC_NB.pkl", 'r')
-    #y_DT = NAG_WBC_DT.predict(NAG_predicted)
-    #y_LR = NAG_WBC_LR.predict(NAG_predicted)
-    #y_NB = NAG_WBC_NB.predict(NAG_predicted)
-    #y_or = y_DT | y_LR | y_NB
-    #y_and = y_DT & y_LR & y_NB
-
+    y_DT = NAG_WBC_DT.predict(NAG_predicted)
+    y_LR = NAG_WBC_LR.predict(NAG_predicted)
+    y_NB = NAG_WBC_NB.predict(NAG_predicted)
+    y_or = y_DT | y_LR | y_NB
+    y_and = y_DT & y_LR & y_NB
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     NAG_predicted['Type'] = y
     WBC_predicted = NAG_predicted.loc[NAG_predicted['Type'] == 1]
     evaluation_matrix('WBC', WBC_predicted, WBC)
@@ -228,7 +267,8 @@ def main():
     y_NB = WBC_CD45D_NB.predict(WBC_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45D_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
     evaluation_matrix('CD45D', CD45D_predicted, CD45D)
@@ -244,10 +284,11 @@ def main():
     y_NB = WBC_CD45L_NB.predict(WBC_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45L_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
-    evaluation_matrix('CD45L', CD45L_predcited, CD45L)
+    evaluation_matrix('CD45L', CD45L_predicted, CD45L)
     logging.debug("CD45L\t" + str(CD45L_predicted.shape[0]))
 
     ################################
@@ -265,6 +306,8 @@ def main():
     y_NB = CD45D_CD19CD10C_NB.predict(CD45D_predicted)
     y_or = y_DT | y_NB | y_LR
     y_and = y_DT & y_NB & y_LR
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD45D_predicted['Type'] = y
     CD19CD10C_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
     evaluation_matrix('CD19CD10C', CD19CD10C_predicted, CD19CD10C)
@@ -280,6 +323,8 @@ def main():
     y_NB = CD45D_CD34_NB.predict(CD45D_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD45D_predicted['Type'] = y
     CD34_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
     evaluation_matrix('CD34', CD34_predicted, CD34)
@@ -298,7 +343,8 @@ def main():
     y_NB = CD45L_CD19PL_NB.predict(CD45L_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19PL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
     evaluation_matrix('CD19PL', CD19PL_predicted, CD19PL)
@@ -314,7 +360,8 @@ def main():
     y_NB = CD45L_CD19NL_NB.predict(CD45L_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19NL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
     evaluation_matrix('CD19NL', CD19NL_predicted, CD19NL)
@@ -335,7 +382,8 @@ def main():
     y_NB = CD19PL_KPB_NB.predict(CD19PL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     KPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
     evaluation_matrix('KPB', KPB_predicted, KPB)
@@ -351,7 +399,8 @@ def main():
     y_NB = CD19PL_LPB_NB.predict(CD19PL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     LPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
     evaluation_matrix('LPB', LPB_predicted, LPB)
@@ -370,7 +419,8 @@ def main():
     y_NB = CD19NL_CD3CD16T_NB.predict(CD19NL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     CD3CD16T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('CD3CD16T', CD3CD16T_predicted, CD3CD16T)
@@ -386,7 +436,8 @@ def main():
     y_NB = CD19NL_NK_NB.predict(CD19NL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NK_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('NK', NK_predicted, NK)
@@ -402,7 +453,8 @@ def main():
     y_NB = CD19NL_NBNT_NB.predict(CD19NL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NBNT_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('NBNT', NBNT_predicted, NBNT)
@@ -418,7 +470,8 @@ def main():
     y_NB = CD19NL_T_NB.predict(CD19NL_predicted)
     y_or = y_DT | y_LR | y_NB
     y_and = y_DT & y_LR & y_NB
-
+    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('T', T_predicted, T)
