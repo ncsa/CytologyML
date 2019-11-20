@@ -9,14 +9,8 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.naive_bayes import GaussianNB
 from sklearn import tree
 from sklearn import metrics
-
 from sklearn.preprocessing import LabelEncoder
-from keras.utils import np_utils
 from sklearn.preprocessing import StandardScaler
-from keras import Sequential
-from keras.models import Sequential
-from keras.layers import Dense, Conv1D, Flatten, MaxPooling1D
-
 from sklearn.externals import joblib
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
