@@ -17,12 +17,7 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 
 from sklearn.preprocessing import LabelEncoder
-from keras.utils import np_utils
 from sklearn.preprocessing import StandardScaler
-from keras import Sequential
-from keras.models import Sequential
-from keras.layers import Dense, Conv1D, Flatten, MaxPooling1D
-
 import pickle
 import sklearn.externals.joblib.numpy_pickle
 from sklearn.externals.joblib import dump, load
