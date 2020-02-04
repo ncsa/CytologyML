@@ -15,5 +15,6 @@
   "NBNT_Files": "path/to/file",
   "T_Files": "path/to/file",
   "Metrics_Path": "path/to/dir",
-  "Models_Path": "path/to/dir"
+  "Models_Path": "path/to/dir",
+  "Checks_Path": "path/to/dir"
 }
