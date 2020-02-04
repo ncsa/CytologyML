@@ -4,23 +4,19 @@ import json
 import os
 import argparse
 import logging, sys
-from training import Preprocessing
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.naive_bayes import GaussianNB
-from sklearn import tree
-from sklearn import metrics
 import scikitplot as skplt
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve
-from sklearn.metrics import auc
-
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
 import pickle
-import sklearn.externals.joblib.numpy_pickle
+from training import Preprocessing
+
+from sklearn import tree, metrics
 from sklearn.externals.joblib import dump, load
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import sklearn.externals.joblib.numpy_pickle
 
 def evaluation_matrix(name, predicted,known):
     '''This function is converting dataframes to sets so that arithmetic can be performed to calculate TP, FP, FN on the sets'''
@@ -233,6 +229,7 @@ def main():
         T_File_Handle = [pd.read_csv(T_Files[i]) for i in range(len(T_Files))]
         Metrics_Path = files_dict['Metrics_Path']
         Models_Path = files_dict['Models_Path']
+        Checks_Path = files_dict['Checks_Path']
 
         A = Preprocessing(A_Files, A_File_Handle, A)
         NAG = Preprocessing(NAG_Files, NAG_File_Handle, NAG)
@@ -250,15 +247,14 @@ def main():
         NBNT = Preprocessing(NBNT_Files, NBNT_File_Handle, NBNT)
         T = Preprocessing(T_Files, T_File_Handle, T)
 
-
-
     else:
-        with open('deployment_nodb.json', 'r') as f:
+        with open(file_path, 'r') as f:
             files_dict = json.load(f, strict=False)
         A_Files = files_dict['A_Files'].split("?")
         A_File_Handle = [pd.read_csv(A_Files[i], header=0) for i in range(len(A_Files))]
         Metrics_Path = files_dict['Metrics_Path']
         Models_Path = files_dict['Models_Path']
+        Checks_Path = files_dict['Checks_Path']
         A = Preprocessing(A_Files, A_File_Handle, A)
 
 
@@ -280,10 +276,8 @@ def main():
     print(y_DT_prob)
     y_LR = A_NAG_LR.predict(A)
     y_NB = A_NAG_NB.predict(A)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
-    list = ["y_DT", "y_LR", "y_NB", "y_or", "y_and"]
+    options = [y_DT, y_LR, y_NB]
+    list = ["y_DT", "y_LR", "y_NB"]
     y = options[list.index(method)]
 
     A['Type'] = y
@@ -302,9 +296,7 @@ def main():
     y_DT = NAG_WBC_DT.predict(NAG_predicted)
     y_LR = NAG_WBC_LR.predict(NAG_predicted)
     y_NB = NAG_WBC_NB.predict(NAG_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     NAG_predicted['Type'] = y
     WBC_predicted = NAG_predicted.loc[NAG_predicted['Type'] == 1]
@@ -324,9 +316,7 @@ def main():
     y_DT = WBC_CD45D_DT.predict(WBC_predicted)
     y_LR = WBC_CD45D_LR.predict(WBC_predicted)
     y_NB = WBC_CD45D_NB.predict(WBC_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45D_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
@@ -341,9 +331,7 @@ def main():
     y_DT = WBC_CD45L_DT.predict(WBC_predicted)
     y_LR = WBC_CD45L_LR.predict(WBC_predicted)
     y_NB = WBC_CD45L_NB.predict(WBC_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45L_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
@@ -363,9 +351,7 @@ def main():
     y_DT = CD45D_CD19CD10C_DT.predict(CD45D_predicted)
     y_LR = CD45D_CD19CD10C_LR.predict(CD45D_predicted)
     y_NB = CD45D_CD19CD10C_NB.predict(CD45D_predicted)
-    y_or = y_DT | y_NB | y_LR
-    y_and = y_DT & y_NB & y_LR
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD45D_predicted['Type'] = y
     CD19CD10C_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
@@ -382,9 +368,7 @@ def main():
     y_DT = CD45D_CD34_DT.predict(CD45D_predicted)
     y_LR = CD45D_CD34_LR.predict(CD45D_predicted)
     y_NB = CD45D_CD34_NB.predict(CD45D_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD45D_predicted['Type'] = y
     CD34_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
@@ -402,9 +386,7 @@ def main():
     y_DT = CD45L_CD19PL_DT.predict(CD45L_predicted)
     y_LR = CD45L_CD19PL_LR.predict(CD45L_predicted)
     y_NB = CD45L_CD19PL_NB.predict(CD45L_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19PL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
@@ -419,9 +401,7 @@ def main():
     y_DT = CD45L_CD19NL_DT.predict(CD45L_predicted)
     y_LR = CD45L_CD19NL_LR.predict(CD45L_predicted)
     y_NB = CD45L_CD19NL_NB.predict(CD45L_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19NL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
@@ -441,9 +421,7 @@ def main():
     y_DT = CD19PL_KPB_DT.predict(CD19PL_predicted)
     y_LR = CD19PL_KPB_LR.predict(CD19PL_predicted)
     y_NB = CD19PL_KPB_NB.predict(CD19PL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     KPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
@@ -458,9 +436,7 @@ def main():
     y_DT = CD19PL_LPB_DT.predict(CD19PL_predicted)
     y_LR = CD19PL_LPB_LR.predict(CD19PL_predicted)
     y_NB = CD19PL_LPB_NB.predict(CD19PL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     LPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
@@ -478,9 +454,7 @@ def main():
     y_DT = CD19NL_CD3CD16T_DT.predict(CD19NL_predicted)
     y_LR = CD19NL_CD3CD16T_LR.predict(CD19NL_predicted)
     y_NB = CD19NL_CD3CD16T_NB.predict(CD19NL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     CD3CD16T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
@@ -495,9 +469,7 @@ def main():
     y_DT = CD19NL_NK_DT.predict(CD19NL_predicted)
     y_LR = CD19NL_NK_LR.predict(CD19NL_predicted)
     y_NB = CD19NL_NK_NB.predict(CD19NL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NK_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
@@ -512,9 +484,7 @@ def main():
     y_DT = CD19NL_NBNT_DT.predict(CD19NL_predicted)
     y_LR = CD19NL_NBNT_LR.predict(CD19NL_predicted)
     y_NB = CD19NL_NBNT_NB.predict(CD19NL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NBNT_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
@@ -529,9 +499,7 @@ def main():
     y_DT = CD19NL_T_DT.predict(CD19NL_predicted)
     y_LR = CD19NL_T_LR.predict(CD19NL_predicted)
     y_NB = CD19NL_T_NB.predict(CD19NL_predicted)
-    y_or = y_DT | y_LR | y_NB
-    y_and = y_DT & y_LR & y_NB
-    options = [y_DT, y_LR, y_NB, y_or, y_and]
+    options = [y_DT, y_LR, y_NB]
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
