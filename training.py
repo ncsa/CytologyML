@@ -3,28 +3,23 @@ import pandas as pd
 import numpy as np
 import logging, sys
 import argparse
-from sklearn.model_selection import train_test_split
+
+from sklearn import metrics, tree, svm, datasets
+from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.naive_bayes import GaussianNB
-from sklearn import tree
-from sklearn import metrics
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
-from sklearn.externals import joblib
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
-
-from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
+from sklearn.naive_bayes import GaussianNB
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.utils.multiclass import unique_labels
+
+import matplotlib.pyplot as plt
 
 """View requirements.txt for information on version requirements"""
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 #Functions to write classification checks to file
-def add_to_file(f, classes, df, val):
+def Classification_Checks(f, classes, df, val):
     f = open(f,'a')
     f.write(str(classes[val]) + '\n')
     f.write(str(df.shape) + '\n')
@@ -32,8 +27,8 @@ def add_to_file(f, classes, df, val):
     f.write(str(df.groupby('Type').size()) + '\n')
     f.write("-------------------" + '\n')
 
-def sanity_check(superset, subset):
-    f = open("sanity_checks.txt", "a")
+def sanity_check(superset, subset, Checks_Path):
+    f = open(Checks_Path+"sanity_checks.txt", "a")
     #check intersections of subset with the nonzero and zero values from the superset
     nonzero = superset.loc[superset['Type'] == 1]
     zero = superset.loc[superset['Type'] == 0]
@@ -59,26 +54,21 @@ def sanity_check(superset, subset):
 
 #Removing columns where there are no entries in the data
 def Preprocessing(Files, File_Handle, Dataframe):
-    """Preprocressing will remove columns where there are no entries and set the Type to 1."""
-    dropped = 0
+    """Preprocressing creates dataframes that will be used for future classification tasks"""
     for i in range(len(Files)):
         File_Handle[i].dropna(axis=1, how='all', inplace=True)
         for i in range(len(Files)):
-            Dataframe = pd.concat([Dataframe, File_Handle[i]], axis=0, sort=False, ignore_index=True)
+            Dataframe = pd.concat([Dataframe, File_Handle[i]], ignore_index=True)
             Dataframe['Type'] = 1
-            #Below is a check for how many columns are dropped, if more than 5% of the dataframe was dropped, the user is notified
-            dropped = Dataframe.isnull().values.ravel().sum()
-            if(dropped > (0.05*len(Files))):
-                raise Exception ("Too many columns were dropped from the dataframe", num_dropped)
             return Dataframe
 
 def Subset_Setup(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
-    """Subset setup is removing duplicates between the superset and subset, and elements of the superset that are
+    """Subset_Setup is removing duplicates between the superset and subset, and elements of the superset that are
     not a part of subset are assigned Type 0 and will then be concatenated with the subset to create the final dataframe."""
     Not_Subset_Dataframe = pd.DataFrame()
-    Not_Subset_Dataframe = pd.concat([Superset_Dataframe, Subset_Dataframe]).drop_duplicates(keep=False)
+    Not_Subset_Dataframe = pd.concat([Superset_Dataframe, Subset_Dataframe], ignore_index=True).drop_duplicates(keep=False)
     Not_Subset_Dataframe['Type'] = 0
-    Final_Dataframe = pd.concat([Not_Subset_Dataframe, Subset_Dataframe], axis=0, sort=False, ignore_index=True)
+    Final_Dataframe = pd.concat([Not_Subset_Dataframe, Subset_Dataframe], ignore_index=True)
     logging.debug(Subset_Dataframe.shape[0])
     logging.debug(Not_Subset_Dataframe.shape[0])
     logging.debug(Final_Dataframe.shape[0])
@@ -97,8 +87,6 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     logging.debug(y.shape)
     logging.debug(y.columns)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-    X_train = X
-    y_train = y
 
     ################################################
     # 				NAIVE BAYES		   			   #
@@ -112,8 +100,8 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
     Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
     Metrics_File_Handle.write("############################\n")
-    NB_File = Models_Path + Metrics_File_Name[:-4] + "_NB.pkl"
-    joblib.dump(Gaussian_NB, NB_File)
+    NB_File = Metrics_File_Name[:-4] + "_NB.pkl"
+    joblib.dump(Gaussian_NB, Models_Path+NB_File)
 
     ################################################
     # 		DECISION TREES						   #
@@ -127,8 +115,8 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
     Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
     Metrics_File_Handle.write("############################\n")
-    DT_File = Models_Path + Metrics_File_Name[:-4] + "_DT.pkl"
-    joblib.dump(Decision_Tree, DT_File)
+    DT_File = Metrics_File_Name[:-4] + "_DT.pkl"
+    joblib.dump(Decision_Tree, Models_Path+DT_File)
 
     ################################################
     # 		MULTI-CLASS LOGISTIC REGRESSION		   #
@@ -143,8 +131,8 @@ def Basic_Classification(Dataframe, Metrics_File_Name, Metrics_Path, Models_Path
     Metrics_File_Handle.write(str(confusion_matrix(y_test, y_pred))+"\n")
     Metrics_File_Handle.write(str(classification_report(y_test, y_pred))+"\n")
     Metrics_File_Handle.write("############################\n")
-    LR_File = Models_Path + Metrics_File_Name[:-4] + "_LR.pkl"
-    joblib.dump(Logistic_regression, LR_File)
+    LR_File = Metrics_File_Name[:-4] + "_LR.pkl"
+    joblib.dump(Logistic_regression, Models_Path+LR_File)
 
 
 def main():
@@ -158,7 +146,7 @@ def main():
 
     # Creating a list of files and file handles that can be used to process the files
     A_Files = files_dict['A_Files'].split("?")
-    A_File_Handle = [pd.read_csv(A_Files[i], header=0) for i in range(len(A_Files))]
+    A_File_Handle = [pd.read_csv(A_Files[i], encoding='utf-8', header=0) for i in range(len(A_Files))]
     NAG_Files = files_dict['NAG_Files'].split("?")
     NAG_File_Handle = [pd.read_csv(NAG_Files[i]) for i in range(len(NAG_Files))]
     WBC_Files = files_dict['WBC_Files'].split("?")
@@ -189,6 +177,7 @@ def main():
     T_File_Handle = [pd.read_csv(T_Files[i]) for i in range(len(T_Files))]
     Metrics_Path = files_dict['Metrics_Path']
     Models_Path = files_dict['Models_Path']
+    Checks_Path = files_dict['Checks_Path']
 
     files = [A_File_Handle, NAG_File_Handle, WBC_File_Handle, CD45D_File_Handle, CD45L_File_Handle,
     CD19CD10C_File_Handle, CD34_File_Handle, CD19PL_File_Handle, CD19NL_File_Handle, KPB_File_Handle,
@@ -205,20 +194,20 @@ def main():
     A = pd.DataFrame()
     NAG = pd.DataFrame()
     A = Preprocessing(A_Files, A_File_Handle, A)
-    open("results.txt", "w").close()
-    add_to_file("results.txt", classes, A, val)
+    open(Checks_Path+"results.txt", "w").close()
+    Classification_Checks(Checks_Path+"results.txt", classes, A, val)
 
     NAG = Preprocessing(NAG_Files, NAG_File_Handle, NAG)
     val += 1
-    add_to_file("results.txt", classes, NAG, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, NAG, val)
 
     ANAG = pd.DataFrame()
     ANAG = Subset_Setup(A, NAG, ANAG)
     val+=1
-    add_to_file("results.txt", classes, ANAG, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, ANAG, val)
 
-    open("sanity_checks.txt", "w").close()
-    sanity_check(ANAG,NAG)
+    open(Checks_Path+"sanity_checks.txt", "w").close()
+    sanity_check(ANAG,NAG,Checks_Path)
 
     Basic_Classification(ANAG, "A_NAG.txt", Metrics_Path, Models_Path)
 
@@ -226,12 +215,12 @@ def main():
     WBC = pd.DataFrame()
     WBC = Preprocessing(WBC_Files, WBC_File_Handle, WBC)
     val+=1
-    add_to_file("results.txt", classes, WBC, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, WBC, val)
     NAGWBC = pd.DataFrame()
     NAGWBC = Subset_Setup(NAG, WBC, NAGWBC)
     val+=1
-    add_to_file("results.txt", classes, NAGWBC, val)
-    sanity_check(NAGWBC, WBC)
+    Classification_Checks(Checks_Path+"results.txt", classes, NAGWBC, val)
+    sanity_check(NAGWBC, WBC,Checks_Path)
     Basic_Classification(NAGWBC, "NAG_WBC.txt", Metrics_Path, Models_Path)
 
 
@@ -240,23 +229,23 @@ def main():
     CD45D = Preprocessing(CD45D_Files, CD45D_File_Handle, CD45D)
     CD45L = Preprocessing(CD45L_Files, CD45L_File_Handle, CD45L)
     val+=1
-    add_to_file("results.txt", classes, CD45D, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45D, val)
     val+=1
-    add_to_file("results.txt", classes, CD45L, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45L, val)
     WBCCD45D = pd.DataFrame()
     WBCCD45L = pd.DataFrame()
     WBCCD45D = Subset_Setup(WBC, CD45D, WBCCD45D)
     WBCCD45L = Subset_Setup(WBC, CD45L, WBCCD45L)
 
-    sanity_check(WBCCD45D, CD45D)
-    sanity_check(WBCCD45L, CD45L)
+    sanity_check(WBCCD45D, CD45D,Checks_Path)
+    sanity_check(WBCCD45L, CD45L,Checks_Path)
 
     Basic_Classification(WBCCD45D, "WBC_CD45D.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, WBCCD45D, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, WBCCD45D, val)
     Basic_Classification(WBCCD45L, "WBC_CD45L.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, WBCCD45L, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, WBCCD45L, val)
 
 
     CD19CD10C = pd.DataFrame()
@@ -264,22 +253,22 @@ def main():
     CD19CD10C = Preprocessing(CD19CD10C_Files, CD19CD10C_File_Handle, CD19CD10C)
     CD34 = Preprocessing(CD34_Files, CD34_File_Handle, CD34)
     val+=1
-    add_to_file("results.txt", classes, CD19CD10C, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19CD10C, val)
     val+=1
-    add_to_file("results.txt", classes, CD34, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD34, val)
     CD45DCD19CD10C = pd.DataFrame()
     CD45DCD34 = pd.DataFrame()
     CD45DCD19CD10C = Subset_Setup(CD45D, CD19CD10C, CD45DCD19CD10C)
     CD45DCD34 = Subset_Setup(CD45D, CD34, CD45DCD34)
-    sanity_check(CD45DCD19CD10C,CD19CD10C)
-    sanity_check(CD45DCD34, CD34)
+    sanity_check(CD45DCD19CD10C,CD19CD10C,Checks_Path)
+    sanity_check(CD45DCD34, CD34,Checks_Path)
 
     Basic_Classification(CD45DCD19CD10C, "CD45D_CD19CD10C.txt", Metrics_Path, Models_Path)
     Basic_Classification(CD45DCD34, "CD45D_CD34.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD45DCD19CD10C, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45DCD19CD10C, val)
     val += 1
-    add_to_file("results.txt", classes, CD45DCD34, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45DCD34, val)
 
 
     CD19PL = pd.DataFrame()
@@ -287,44 +276,44 @@ def main():
     CD19PL = Preprocessing(CD19PL_Files, CD19PL_File_Handle, CD19PL)
     CD19NL = Preprocessing(CD19NL_Files, CD19NL_File_Handle, CD19NL)
     val+=1
-    add_to_file("results.txt", classes, CD19PL, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19PL, val)
     val+=1
-    add_to_file("results.txt", classes, CD19NL, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19NL, val)
     CD45LCD19PL = pd.DataFrame()
     CD45LCD19NL = pd.DataFrame()
     CD45LCD19PL = Subset_Setup(CD45L, CD19PL, CD45LCD19PL)
     CD45LCD19NL = Subset_Setup(CD45L, CD19NL, CD45LCD19NL)
-    sanity_check(CD45LCD19PL,CD19PL)
-    sanity_check(CD45LCD19NL, CD19NL)
+    sanity_check(CD45LCD19PL,CD19PL,Checks_Path)
+    sanity_check(CD45LCD19NL, CD19NL,Checks_Path)
 
     Basic_Classification(CD45LCD19PL, "CD45L_CD19PL.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD45LCD19PL, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45LCD19PL, val)
     Basic_Classification(CD45LCD19NL, "CD45L_CD19NL.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD45LCD19NL, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD45LCD19NL, val)
 
     KPB = pd.DataFrame()
     LPB = pd.DataFrame()
     KPB = Preprocessing(KPB_Files, KPB_File_Handle, KPB)
     LPB = Preprocessing(LPB_Files, LPB_File_Handle, LPB)
     val+=1
-    add_to_file("results.txt", classes, KPB, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, KPB, val)
     val+=1
-    add_to_file("results.txt", classes, LPB, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, LPB, val)
     CD19PLKPB = pd.DataFrame()
     CD19PLLPB = pd.DataFrame()
     CD19PLKPB = Subset_Setup(CD19PL, KPB, CD19PLKPB)
     CD19PLLPB = Subset_Setup(CD19PL, LPB, CD19PLLPB)
-    sanity_check(CD19PLKPB,KPB)
-    sanity_check(CD19PLLPB, LPB)
+    sanity_check(CD19PLKPB,KPB,Checks_Path)
+    sanity_check(CD19PLLPB, LPB,Checks_Path)
 
     Basic_Classification(CD19PLKPB, "CD19PL_KPB.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19PLKPB, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19PLKPB, val)
     Basic_Classification(CD19PLLPB, "CD19PL_LPB.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19PLLPB, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19PLLPB, val)
 
     CD3CD16T = pd.DataFrame()
     NK = pd.DataFrame()
@@ -335,13 +324,13 @@ def main():
     NBNT = Preprocessing(NBNT_Files, NBNT_File_Handle, NBNT)
     T = Preprocessing(T_Files, T_File_Handle, T)
     val+=1
-    add_to_file("results.txt", classes, CD3CD16T, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD3CD16T, val)
     val+=1
-    add_to_file("results.txt", classes, NK, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, NK, val)
     val+=1
-    add_to_file("results.txt", classes, NBNT, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, NBNT, val)
     val+=1
-    add_to_file("results.txt", classes, T, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, T, val)
     CD19NLCD3CD16T = pd.DataFrame()
     CD19NLNK = pd.DataFrame()
     CD19NLNBNT = pd.DataFrame()
@@ -350,24 +339,24 @@ def main():
     CD19NLNK = Subset_Setup(CD19NL, NK, CD19NLNK)
     CD19NLNBNT = Subset_Setup(CD19NL, NBNT, CD19NLNBNT)
     CD19NLT = Subset_Setup(CD19NL, T, CD19NLT)
-    sanity_check(CD19NLCD3CD16T,CD3CD16T)
-    sanity_check(CD19NLNK, NK)
-    sanity_check(CD19NLNBNT, NBNT)
-    sanity_check(CD19NLT, T)
+    sanity_check(CD19NLCD3CD16T,CD3CD16T,Checks_Path)
+    sanity_check(CD19NLNK, NK,Checks_Path)
+    sanity_check(CD19NLNBNT, NBNT, Checks_Path)
+    sanity_check(CD19NLT, T, Checks_Path)
 
 
     Basic_Classification(CD19NLCD3CD16T, "CD19NL_CD3CD16T.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19NLCD3CD16T, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19NLCD3CD16T, val)
     Basic_Classification(CD19NLNK, "CD19NL_NK.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19NLNK, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19NLNK, val)
     Basic_Classification(CD19NLT, "CD19NL_T.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19NLT, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19NLT, val)
     Basic_Classification(CD19NLNBNT, "CD19NL_NBNT.txt", Metrics_Path, Models_Path)
     val += 1
-    add_to_file("results.txt", classes, CD19NLNBNT, val)
+    Classification_Checks(Checks_Path+"results.txt", classes, CD19NLNBNT, val)
 
 
 if __debug__:
@@ -377,3 +366,4 @@ else:
 
 if __name__== "__main__":
   main()
+
