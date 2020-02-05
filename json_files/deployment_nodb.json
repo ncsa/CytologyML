@@ -1,6 +1,7 @@
 {
-      "A_Files": "/path/to/file",
-      "Metrics_Path": "/path/to/folder",
-      "Models_Path": "/path/to/folder",
-      "Checks_Path": "path/to/folder"
+	"Study_Name": "name of the study",
+    "A_Files": "/path/to/file",
+    "Metrics_Path": "/path/to/folder",
+    "Models_Path": "/path/to/folder",
+    "Checks_Path": "path/to/folder"
 }

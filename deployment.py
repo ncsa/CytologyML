@@ -18,19 +18,22 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import sklearn.externals.joblib.numpy_pickle
 
-def evaluation_matrix(name, predicted,known):
+def evaluation_matrix(name, predicted, known, Metrics_Path):
     '''This function is converting dataframes to sets so that arithmetic can be performed to calculate TP, FP, FN on the sets'''
-    f = open("/Users/prakruthiburra/Desktop/Metrics/evaluation_matrix.txt", "a")
-    known = known.drop(['Time'], axis=1)
+    if(known.empty):
+        print(name + " is empty\n")
+        return
+
+    f = open(Metrics_Path+"evaluation_matrix.txt", "a")
+
     predicted_list = (predicted.values).tolist()
     predicted_set = set(map(tuple, predicted_list))
 
+    known = known.drop(['Time'], axis=1)
     known_list = (known.values).tolist()
     known_set = set(map(tuple,known_list))
-    # print("PREDICTED: " + str(predicted.shape))
-    # print("KNOWN: "+ str(known.shape))
-    f.write(name + ":" + '\n')
 
+    f.write(name + ":" + '\n')
     #Use set intersection methods
     f.write("Length of Known: " + str(len(known_set)) + '\n')
     f.write("Length of Predicted: " + str(len(predicted_set)) + '\n')
@@ -48,44 +51,6 @@ def evaluation_matrix(name, predicted,known):
     f.write("NUMBER OF FN: " + str(len(FN)) + '\n')
 
     f.write("------------" + '\n')
-
-def auc_curve(actual, predicted):
-    auc = 0
-    actual_values = []
-    predicted_values = []
-    predicted_list = (predicted.values).tolist()
-    predicted_set = set(map(tuple, predicted_list))
-    actual_list = (actual.values).tolist()
-    actual_set = set(map(tuple,actual_list))
-    temp = actual_set.intersection(predicted_set)
-    #print(len(temp))
-    # for i in predicted_set:
-    #     for j in actual_set:
-    #         if(actual_set.intersection(predicted_set)):
-    #             #put type of each in their respected array of values
-    #             actual_values.append(j['Type'])
-    #             predicted_values.append(i['Type'])
-    #Call auc function on the two sets of values
-    #fpr, tpr, thresholds = metrics.roc_curve(actual_values, predicted_values, pos_label=2)
-
-    # print(np.sum(actual_values, axis=0))
-    # print(np.sum(predicted_values, axis=0))
-
-    #auc = metrics.roc_auc_score(actual_values, predicted_values)
-    #auc = metrics.auc(fpr, tpr)
-    return auc
-
-    # #ROC Curve
-    # true_labels = known['Type'].values.tolist()
-    # #print(auc)
-    # # plt.plot(FP,TP,label="data 1, auc="+str(auc))
-    # # plt.legend(loc=8)
-    # # plt.show()
-    # fpr, tpr, thresholds = metrics.roc_curve(true_labels, predicted_list, pos_label=1)
-    # auc = "%.2f" % metrics.auc(fpr, tpr)
-    # title = 'ROC Curve, AUC = '+str(auc)
-    # plt.plot(fpr,tpr)
-    # plt.show()
 
 def method_input():
     parser = argparse.ArgumentParser()
@@ -106,67 +71,6 @@ def Check_Attributes_Dataframe(Dataframe):
     print(Dataframe.head())
     print("############################")
 
-def Subset_Setup(Superset_Dataframe, Subset_Dataframe, Final_Dataframe):
-    """Subset setup is removing duplicates between the superset and subset, and elements of the superset that are
-    not a part of subset are assigned Type 0 and will then be concatenated with the subset to create the final dataframe."""
-    print("IN SUBSET SETUP NOW")
-    print(Superset_Dataframe.columns)
-    print(Subset_Dataframe.columns)
-    Subset_Dataframe.loc[:, ('Type')] = 1
-    #Subset_Dataframe['Type'] = 1
-    superset_list = (Superset_Dataframe.values).tolist()
-    superset_set = set(map(tuple, superset_list))
-    subset_list = (Subset_Dataframe.values).tolist()
-    subset_set = set(map(tuple, subset_list))
-    notsubset_set = superset_set - subset_set
-    print(len(superset_set))
-    print(len(subset_set))
-    print(len(notsubset_set))
-
-    print(Superset_Dataframe.shape)
-    print(Subset_Dataframe.shape)
-    Not_Subset_Dataframe = pd.DataFrame()
-    Not_Subset_Dataframe = pd.concat([Superset_Dataframe, Subset_Dataframe]).drop_duplicates(keep=False)
-    Not_Subset_Dataframe['Type'] = 0
-    print(Not_Subset_Dataframe.shape)
-    Final_Dataframe = pd.concat([Not_Subset_Dataframe, Subset_Dataframe], axis=0, sort=False, ignore_index=True)
-    print(Final_Dataframe.shape)
-    logging.debug(Subset_Dataframe.shape[0])
-    logging.debug(Not_Subset_Dataframe.shape[0])
-    logging.debug(Final_Dataframe.shape[0])
-    print("EXITING SUBSET SETUP")
-    return Final_Dataframe
-
-def AUC_Setup(Actual_Dataframe, Predicted_Dataframe):
-    predicted_list = (Predicted_Dataframe.values).tolist()
-    predicted_set = set(map(tuple, predicted_list))
-    actual_list = (Actual_Dataframe.values).tolist()
-    actual_set = set(map(tuple, actual_list))
-    working_prediction_set = predicted_set.intersection(actual_set)
-    working_actual_set = actual_set.intersection(predicted_set)
-    # print(Actual_Dataframe.shape)
-    # print(Predicted_Dataframe.shape)
-    # print(len(working_prediction_set))
-    # print(len(working_actual_set))
-    working_prediction_set_df =  pd.DataFrame(list(working_prediction_set))
-    working_prediction_set_df.columns = ['FSC-A', 'FSC-H', 'FSC-W', 'SSC-A', 'SSC-H', 'SSC-W', 'Comp-FITC-A',
-       'Comp-PE-A', 'Comp-PerCP-Cy5-5-A', 'Comp-PE-Cy7-A', 'Comp-APC-A',
-       'Comp-APC-H7-A', 'Comp-V450-A', 'Comp-V500-A', 'Type_predicted']
-    working_actual_set_df =  pd.DataFrame(list(working_actual_set))
-    working_actual_set_df.columns = ['FSC-A', 'FSC-H', 'FSC-W', 'SSC-A', 'SSC-H', 'SSC-W', 'Comp-FITC-A',
-       'Comp-PE-A', 'Comp-PerCP-Cy5-5-A', 'Comp-PE-Cy7-A', 'Comp-APC-A',
-       'Comp-APC-H7-A', 'Comp-V450-A', 'Comp-V500-A', 'Type_actual']
-    # print(working_prediction_set_df.shape)
-    # print(working_actual_set_df.shape)
-    # print(working_prediction_set_df.columns)
-    # print(working_actual_set_df.columns)
-    working_final = pd.merge(working_actual_set_df,working_prediction_set_df, how='right')
-    actual_predicted = working_final[['Type_actual', 'Type_predicted']]
-    # print(working_final.columns)
-    # print(working_final.shape)
-    # print(actual_predicted.columns)
-    # print(actual_predicted.shape)
-    return actual_predicted
 
 def main():
     study = 0
@@ -230,6 +134,7 @@ def main():
         Metrics_Path = files_dict['Metrics_Path']
         Models_Path = files_dict['Models_Path']
         Checks_Path = files_dict['Checks_Path']
+        Study_Name = files_dict['Study_Name']
 
         A = Preprocessing(A_Files, A_File_Handle, A)
         NAG = Preprocessing(NAG_Files, NAG_File_Handle, NAG)
@@ -257,13 +162,8 @@ def main():
         Checks_Path = files_dict['Checks_Path']
         A = Preprocessing(A_Files, A_File_Handle, A)
 
-
-    #get study name and write that to file
-    path = os.path.basename(os.path.normpath(A_Files[0])).split(".")
-    path_split = path[0].split("_",2)
-    study_name = path_split[0] + '_' + path_split[1]
     with open(Metrics_Path+"evaluation_matrix.txt", 'w') as a:
-        a.write("Study Name: " + study_name + '\n')
+        a.write("Study Name: " + Study_Name + '\n')
         a.close()
     A = A.drop(['Time'], axis=1)
     A_NAG_DT = load(Models_Path+"A_NAG_DT.pkl", 'r')
@@ -272,8 +172,6 @@ def main():
     A = A.loc[:, A.columns != 'Type']
     y_DT = A_NAG_DT.predict(A)
     y_DT_prob = A_NAG_DT.predict_proba(A)
-    print("PROBABILITIES")
-    print(y_DT_prob)
     y_LR = A_NAG_LR.predict(A)
     y_NB = A_NAG_NB.predict(A)
     options = [y_DT, y_LR, y_NB]
@@ -282,7 +180,7 @@ def main():
 
     A['Type'] = y
     NAG_predicted = A.loc[A['Type'] == 1]
-    evaluation_matrix('NAG', NAG_predicted, NAG)
+    evaluation_matrix('NAG', NAG_predicted, NAG, Metrics_Path)
     logging.debug("NAG\t" + str(NAG_predicted.shape[0]))
 
     ################################
@@ -300,7 +198,7 @@ def main():
     y = options[list.index(method)]
     NAG_predicted['Type'] = y
     WBC_predicted = NAG_predicted.loc[NAG_predicted['Type'] == 1]
-    evaluation_matrix('WBC', WBC_predicted, WBC)
+    evaluation_matrix('WBC', WBC_predicted, WBC, Metrics_Path)
     logging.debug("WBC\t" + str(WBC_predicted.shape[0]))
 
     ################################
@@ -320,7 +218,7 @@ def main():
     y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45D_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
-    evaluation_matrix('CD45D', CD45D_predicted, CD45D)
+    evaluation_matrix('CD45D', CD45D_predicted, CD45D, Metrics_Path)
     logging.debug("CD45D\t" + str(CD45D_predicted.shape[0]))
 
     WBC_predicted = WBC_predicted.drop(['Type'], axis=1)
@@ -335,7 +233,7 @@ def main():
     y = options[list.index(method)]
     WBC_predicted['Type'] = y
     CD45L_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
-    evaluation_matrix('CD45L', CD45L_predicted, CD45L)
+    evaluation_matrix('CD45L', CD45L_predicted, CD45L, Metrics_Path)
     logging.debug("CD45L\t" + str(CD45L_predicted.shape[0]))
 
     ################################
@@ -357,7 +255,7 @@ def main():
     CD19CD10C_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
     print("DTYPES --------")
     print(CD19CD10C_predicted.dtypes)
-    evaluation_matrix('CD19CD10C', CD19CD10C_predicted, CD19CD10C)
+    evaluation_matrix('CD19CD10C', CD19CD10C_predicted, CD19CD10C, Metrics_Path)
     logging.debug("CD19CD10C\t" + str(CD19CD10C_predicted.shape[0]))
 
     CD45D_predicted = CD45D_predicted.drop(['Type'], axis=1)
@@ -372,7 +270,7 @@ def main():
     y = options[list.index(method)]
     CD45D_predicted['Type'] = y
     CD34_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
-    evaluation_matrix('CD34', CD34_predicted, CD34)
+    evaluation_matrix('CD34', CD34_predicted, CD34, Metrics_Path)
     logging.debug("CD34\t" + str(CD34_predicted.shape[0]))
 
     ################################
@@ -390,7 +288,7 @@ def main():
     y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19PL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
-    evaluation_matrix('CD19PL', CD19PL_predicted, CD19PL)
+    evaluation_matrix('CD19PL', CD19PL_predicted, CD19PL, Metrics_Path)
     logging.debug("CD19PL\t" + str(CD19PL_predicted.shape[0]))
 
     CD45L_predicted = CD45L_predicted.drop(['Type'], axis=1)
@@ -405,7 +303,7 @@ def main():
     y = options[list.index(method)]
     CD45L_predicted['Type'] = y
     CD19NL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
-    evaluation_matrix('CD19NL', CD19NL_predicted, CD19NL)
+    evaluation_matrix('CD19NL', CD19NL_predicted, CD19NL, Metrics_Path)
     logging.debug("CD19NL\t" + str(CD19NL_predicted.shape[0]))
 
     ################################
@@ -425,7 +323,7 @@ def main():
     y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     KPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
-    evaluation_matrix('KPB', KPB_predicted, KPB)
+    evaluation_matrix('KPB', KPB_predicted, KPB, Metrics_Path)
     logging.debug("KPB\t" + str(KPB_predicted.shape[0]))
 
     CD19PL_predicted = CD19PL_predicted.drop(['Type'], axis=1)
@@ -440,7 +338,7 @@ def main():
     y = options[list.index(method)]
     CD19PL_predicted['Type'] = y
     LPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
-    evaluation_matrix('LPB', LPB_predicted, LPB)
+    evaluation_matrix('LPB', LPB_predicted, LPB, Metrics_Path)
     logging.debug("LPB\t" + str(LPB_predicted.shape[0]))
 
     ################################
@@ -458,7 +356,7 @@ def main():
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     CD3CD16T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
-    evaluation_matrix('CD3CD16T', CD3CD16T_predicted, CD3CD16T)
+    evaluation_matrix('CD3CD16T', CD3CD16T_predicted, CD3CD16T, Metrics_Path)
     logging.debug("CD3CD16T\t" + str(CD3CD16T_predicted.shape[0]))
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
@@ -473,7 +371,7 @@ def main():
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NK_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
-    evaluation_matrix('NK', NK_predicted, NK)
+    evaluation_matrix('NK', NK_predicted, NK, Metrics_Path)
     logging.debug("NK\t" + str(NK_predicted.shape[0]))
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
@@ -488,7 +386,7 @@ def main():
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     NBNT_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
-    evaluation_matrix('NBNT', NBNT_predicted, NBNT)
+    evaluation_matrix('NBNT', NBNT_predicted, NBNT, Metrics_Path)
     logging.debug("NBNT\t" + str(NBNT_predicted.shape[0]))
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
@@ -503,139 +401,11 @@ def main():
     y = options[list.index(method)]
     CD19NL_predicted['Type'] = y
     T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
-    evaluation_matrix('T', T_predicted, T)
+    evaluation_matrix('T', T_predicted, T, Metrics_Path)
     logging.debug("T\t" + str(T_predicted.shape[0]))
 
     ################################
     ################################
 
-    #Superset Creations
-    print("CREATING ANAG")
-    ANAG = pd.DataFrame()
-    NAG = NAG.drop(['Time'], axis=1)
-    ANAG = Subset_Setup(A, NAG, ANAG)
-    print("CREATING NAGWBC")
-    NAGWBC = pd.DataFrame()
-    WBC = WBC.drop(['Time'], axis=1)
-    NAGWBC = Subset_Setup(NAG, WBC, NAGWBC)
-    print("CREATING WBCCD45D")
-    WBCCD45D = pd.DataFrame()
-    CD45D = CD45D.drop(['Time'], axis=1)
-    WBCCD45D = Subset_Setup(WBC, CD45D, WBCCD45D)
-    print("CREATING WBCCD45L")
-    WBCCD45L = pd.DataFrame()
-    CD45L = CD45L.drop(['Time'], axis=1)
-    WBCCD45L = Subset_Setup(WBC, CD45L, WBCCD45L)
-    print("CREATING CD45DCD19CD10C")
-    CD45DCD19CD10C = pd.DataFrame()
-    CD19CD10C = CD19CD10C.drop(['Time'], axis=1)
-    CD45DCD19CD10C = Subset_Setup(CD45D, CD19CD10C, CD45DCD19CD10C)
-    print("CREATING CD45DCD34")
-    CD45DCD34 = pd.DataFrame()
-    CD34 = CD34.drop(['Time'], axis=1)
-    CD45DCD34 = Subset_Setup(CD45D, CD34, CD45DCD34)
-    print("CREATING CD45LCD19PL")
-    CD45LCD19PL = pd.DataFrame()
-    CD19PL = CD19PL.drop(['Time'], axis=1)
-    CD45LCD19PL = Subset_Setup(CD45L, CD19PL, CD45LCD19PL)
-    print("CREATING CD45LCD19NL")
-    CD45LCD19NL = pd.DataFrame()
-    CD19NL = CD19NL.drop(['Time'], axis=1)
-    CD45LCD19NL = Subset_Setup(CD45L, CD19NL, CD45LCD19NL)
-    print("CREATING CD19PLKPB")
-    CD19PLKPB = pd.DataFrame()
-    KPB = KPB.drop(['Time'], axis=1)
-    CD19PLKPB = Subset_Setup(CD19PL, KPB, CD19PLKPB)
-    print("CREATING CD19PLKPB")
-    CD19PLLPB = pd.DataFrame()
-    LPB = LPB.drop(['Time'], axis=1)
-    CD19PLLPB = Subset_Setup(CD19PL, LPB, CD19PLLPB)
-    print("CREATING CD19NLCD3CD16T")
-    CD19NLCD3CD16T = pd.DataFrame()
-    CD3CD16T = CD3CD16T.drop(['Time'], axis=1)
-    CD19NLCD3CD16T = Subset_Setup(CD19NL, CD3CD16T, CD19NLCD3CD16T)
-    print("CREATING CD19NLNK")
-    CD19NLNK = pd.DataFrame()
-    NK = NK.drop(['Time'], axis=1)
-    CD19NLNK = Subset_Setup(CD19NL, NK, CD19NLNK)
-    print("CREATING CD19NLNBNT")
-    CD19NLNBNT = pd.DataFrame()
-    NBNT = NBNT.drop(['Time'], axis=1)
-    CD19NLNBNT = Subset_Setup(CD19NL, NBNT, CD19NLNBNT)
-    print("CREATING CD19NLT")
-    CD19NLT = pd.DataFrame()
-    T = T.drop(['Time'], axis=1)
-    CD19NLT = Subset_Setup(CD19NL, T, CD19NLT)
-    print("\n\n")
-
-    ################################
-    ################################
-    #Predicted Superset Creations
-    print("CREATING ANAG_PREDICTED")
-    ANAG_pred = pd.DataFrame()
-    ANAG_pred = Subset_Setup(A, NAG_predicted, ANAG_pred)
-    # print("AUC: " + str(auc_curve(ANAG, ANAG_pred)))
-    print("CREATING NAGWBC_PREDICTED")
-    NAGWBC_pred = pd.DataFrame()
-    NAGWBC_pred = Subset_Setup(NAG_predicted, WBC_predicted, NAGWBC_pred)
-    #auc_curve(NAGWBC, NAGWBC_pred)
-    print("CREATING WBCCD45D_PREDICTED")
-    WBCCD45D_pred = pd.DataFrame()
-    WBCCD45D_pred = Subset_Setup(WBC_predicted, CD45D_predicted, WBCCD45D_pred)
-    # auc_curve(WBCCD45D, WBCCD45D_pred)
-    print("CREATING WBCCD45L_PREDICTED")
-    WBCCD45L_pred = pd.DataFrame()
-    WBCCD45L_pred = Subset_Setup(WBC_predicted, CD45L_predicted, WBCCD45L_pred)
-    # auc_curve(WBCCD45L, WBCCD45L_pred)
-    print("CREATING CD45DCD19CD10C_PREDICTED")
-    CD45DCD19CD10C_pred = pd.DataFrame()
-    CD45DCD19CD10C_pred = Subset_Setup(CD45D_predicted, CD19CD10C_predicted, CD45DCD19CD10C_pred)
-    # auc_curve(CD45DCD19CD10C, CD45DCD19CD10C_pred)
-    print("CREATING CD45DCD34_PREDICTED")
-    CD45DCD34_pred = pd.DataFrame()
-    CD45DCD34_pred = Subset_Setup(CD45D_predicted, CD34_predicted, CD45DCD34_pred)
-    # auc_curve(CD45DCD34, CD45DCD34_pred)
-    print("CREATING CD45LCD19PL_PREDICTED")
-    CD45LCD19PL_pred = pd.DataFrame()
-    CD45LCD19PL_pred = Subset_Setup(CD45L_predicted, CD19PL_predicted, CD45LCD19PL_pred)
-    # auc_curve(CD45LCD19PL, CD45LCD19PL_pred)
-    print("CREATING CD45LCD19NL_PREDICTED")
-    CD45LCD19NL_pred = pd.DataFrame()
-    CD45LCD19NL_pred = Subset_Setup(CD45L_predicted, CD19NL_predicted, CD45LCD19NL_pred)
-    # auc_curve(CD45LCD19NL, CD45LCD19NL_pred)
-    print("CREATING CD19PLKPB_PREDICTED")
-    CD19PLKPB_pred = pd.DataFrame()
-    CD19PLKPB_pred = Subset_Setup(CD19PL_predicted, KPB_predicted, CD19PLKPB_pred)
-    # auc_curve(CD19PLKPB, CD19PLKPB_pred)
-    print("CREATING CD19PLLPB_PREDICTED")
-    CD19PLLPB_pred = pd.DataFrame()
-    CD19PLLPB_pred = Subset_Setup(CD19PL_predicted, LPB_predicted, CD19PLLPB_pred)
-    # auc_curve(CD19PLLPB, CD19PLLPB_pred)
-    print("CREATING CD19NLCD3CD16T_PREDICTED")
-    CD19NLCD3CD16T_pred = pd.DataFrame()
-    CD19NLCD3CD16T_pred = Subset_Setup(CD19NL_predicted, CD3CD16T_predicted, CD19NLCD3CD16T_pred)
-    # auc_curve(CD19NLCD3CD16T, CD19NLCD3CD16T_pred)
-    print("CREATING CD19NLNK_PREDICTED")
-    CD19NLNK_pred = pd.DataFrame()
-    CD19NLNK_pred = Subset_Setup(CD19NL_predicted, NK_predicted, CD19NLNK_pred)
-    # auc_curve(CD19NLNK, CD19NLNK_pred)
-    print("CREATING CD19NLNBNT_PREDICTED")
-    CD19NLNBNT_pred = pd.DataFrame()
-    CD19NLNBNT_pred = Subset_Setup(CD19NL_predicted, NBNT_predicted, CD19NLNBNT_pred)
-    # auc_curve(CD19NLNBNT, CD19NLNBNT_pred)
-    print("CREATING CD19NLT_PREDICTED")
-    CD19NLT_pred = pd.DataFrame()
-    CD19NLT_pred = Subset_Setup(CD19NL_predicted, T_predicted, CD19NLT_pred)
-    # auc_curve(CD19NLT, CD19NLT_pred)
-
-    #AUC Calculations
-
-    ################################
-    ################################
-    ################################
-    ################################
-
-    ANAG_AUC = AUC_Setup(ANAG, ANAG_pred)
-    NAGWBC_AUC = AUC_Setup(NAGWBC, NAGWBC_pred)
 if __name__== "__main__":
   main()
