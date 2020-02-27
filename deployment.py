@@ -18,10 +18,20 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import sklearn.externals.joblib.numpy_pickle
 
+
 def evaluation_matrix(name, predicted, known, Metrics_Path):
     '''This function is converting dataframes to sets so that arithmetic can be performed to calculate TP, FP, FN on the sets'''
     if(known.empty):
+        f = open(Metrics_Path+"evaluation_matrix.txt", "a")
+        f.write(name + " is empty\n")
+        f.write("------------")
         print(name + " is empty\n")
+        return
+    elif(predicted.empty):
+        f = open(Metrics_Path+"evaluation_matrix.txt", "a")
+        f.write(name + " is predicted to be empty by the model\n")
+        f.write("------------")
+        print(name + " is predicted to be empty by the model\n")
         return
 
     f = open(Metrics_Path+"evaluation_matrix.txt", "a")
@@ -94,7 +104,7 @@ def main():
     NK = pd.DataFrame()
     NBNT = pd.DataFrame()
     T = pd.DataFrame()
-
+    Popstats = []
 
     #Read the data inputs from the JSON file. If debugging mode is on, read from the JSON sent to training. Otherwise, read from a smaller set of files in deployment_files.json
     if(__debug__):
@@ -166,6 +176,7 @@ def main():
         a.write("Study Name: " + Study_Name + '\n')
         a.close()
     A = A.drop(['Time'], axis=1)
+    Popstats.append(A.shape[0])
     A_NAG_DT = load(Models_Path+"A_NAG_DT.pkl", 'r')
     A_NAG_LR = load(Models_Path+"A_NAG_LR.pkl", 'r')
     A_NAG_NB = load(Models_Path+"A_NAG_NB.pkl", 'r')
@@ -175,14 +186,14 @@ def main():
     y_LR = A_NAG_LR.predict(A)
     y_NB = A_NAG_NB.predict(A)
     options = [y_DT, y_LR, y_NB]
-    list = ["y_DT", "y_LR", "y_NB"]
+    list = ["DT", "LR", "NB"]
     y = options[list.index(method)]
 
     A['Type'] = y
     NAG_predicted = A.loc[A['Type'] == 1]
     evaluation_matrix('NAG', NAG_predicted, NAG, Metrics_Path)
     logging.debug("NAG\t" + str(NAG_predicted.shape[0]))
-
+    Popstats.append(NAG_predicted.shape[0])
     ################################
     ################################
     ################################
@@ -200,6 +211,7 @@ def main():
     WBC_predicted = NAG_predicted.loc[NAG_predicted['Type'] == 1]
     evaluation_matrix('WBC', WBC_predicted, WBC, Metrics_Path)
     logging.debug("WBC\t" + str(WBC_predicted.shape[0]))
+    Popstats.append(WBC_predicted.shape[0])
 
     ################################
     ################################
@@ -220,6 +232,7 @@ def main():
     CD45D_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
     evaluation_matrix('CD45D', CD45D_predicted, CD45D, Metrics_Path)
     logging.debug("CD45D\t" + str(CD45D_predicted.shape[0]))
+    Popstats.append(CD45D_predicted.shape[0])
 
     WBC_predicted = WBC_predicted.drop(['Type'], axis=1)
     CD45L_predicted = pd.DataFrame()
@@ -235,6 +248,7 @@ def main():
     CD45L_predicted = WBC_predicted.loc[WBC_predicted['Type'] == 1]
     evaluation_matrix('CD45L', CD45L_predicted, CD45L, Metrics_Path)
     logging.debug("CD45L\t" + str(CD45L_predicted.shape[0]))
+    Popstats.append(CD45L_predicted.shape[0])
 
     ################################
     ################################
@@ -257,6 +271,8 @@ def main():
     print(CD19CD10C_predicted.dtypes)
     evaluation_matrix('CD19CD10C', CD19CD10C_predicted, CD19CD10C, Metrics_Path)
     logging.debug("CD19CD10C\t" + str(CD19CD10C_predicted.shape[0]))
+    Popstats.append(CD19CD10C_predicted.shape[0])
+
 
     CD45D_predicted = CD45D_predicted.drop(['Type'], axis=1)
     CD34_predicted = pd.DataFrame()
@@ -272,6 +288,7 @@ def main():
     CD34_predicted = CD45D_predicted.loc[CD45D_predicted['Type'] == 1]
     evaluation_matrix('CD34', CD34_predicted, CD34, Metrics_Path)
     logging.debug("CD34\t" + str(CD34_predicted.shape[0]))
+    Popstats.append(CD34_predicted.shape[0])
 
     ################################
     ################################
@@ -290,6 +307,8 @@ def main():
     CD19PL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
     evaluation_matrix('CD19PL', CD19PL_predicted, CD19PL, Metrics_Path)
     logging.debug("CD19PL\t" + str(CD19PL_predicted.shape[0]))
+    Popstats.append(CD19PL_predicted.shape[0])
+
 
     CD45L_predicted = CD45L_predicted.drop(['Type'], axis=1)
     CD19NL_predicted = pd.DataFrame()
@@ -305,6 +324,7 @@ def main():
     CD19NL_predicted = CD45L_predicted.loc[CD45L_predicted['Type'] == 1]
     evaluation_matrix('CD19NL', CD19NL_predicted, CD19NL, Metrics_Path)
     logging.debug("CD19NL\t" + str(CD19NL_predicted.shape[0]))
+    Popstats.append(CD19NL_predicted.shape[0])
 
     ################################
     ################################
@@ -325,6 +345,7 @@ def main():
     KPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
     evaluation_matrix('KPB', KPB_predicted, KPB, Metrics_Path)
     logging.debug("KPB\t" + str(KPB_predicted.shape[0]))
+    Popstats.append(KPB_predicted.shape[0])
 
     CD19PL_predicted = CD19PL_predicted.drop(['Type'], axis=1)
     LPB_predicted = pd.DataFrame()
@@ -340,6 +361,7 @@ def main():
     LPB_predicted = CD19PL_predicted.loc[CD19PL_predicted['Type'] == 1]
     evaluation_matrix('LPB', LPB_predicted, LPB, Metrics_Path)
     logging.debug("LPB\t" + str(LPB_predicted.shape[0]))
+    Popstats.append(LPB_predicted.shape[0])
 
     ################################
     ################################
@@ -358,6 +380,7 @@ def main():
     CD3CD16T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('CD3CD16T', CD3CD16T_predicted, CD3CD16T, Metrics_Path)
     logging.debug("CD3CD16T\t" + str(CD3CD16T_predicted.shape[0]))
+    Popstats.append(CD3CD16T_predicted.shape[0])
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
     NK_predicted = pd.DataFrame()
@@ -373,6 +396,7 @@ def main():
     NK_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('NK', NK_predicted, NK, Metrics_Path)
     logging.debug("NK\t" + str(NK_predicted.shape[0]))
+    Popstats.append(NK_predicted.shape[0])
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
     NBNT_predicted = pd.DataFrame()
@@ -388,6 +412,7 @@ def main():
     NBNT_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('NBNT', NBNT_predicted, NBNT, Metrics_Path)
     logging.debug("NBNT\t" + str(NBNT_predicted.shape[0]))
+    Popstats.append(NBNT_predicted.shape[0])
 
     CD19NL_predicted = CD19NL_predicted.drop(['Type'], axis=1)
     T_predicted = pd.DataFrame()
@@ -403,9 +428,10 @@ def main():
     T_predicted = CD19NL_predicted.loc[CD19NL_predicted['Type'] == 1]
     evaluation_matrix('T', T_predicted, T, Metrics_Path)
     logging.debug("T\t" + str(T_predicted.shape[0]))
+    Popstats.append(T_predicted.shape[0])
 
     ################################
     ################################
-
+    print(Popstats)
 if __name__== "__main__":
   main()
